@@ -1,0 +1,81 @@
+.ToDoListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  padding: 10px 20px;
+  border-bottom: 1px solid #5B5D72;
+  box-sizing: border-box;
+  font-size: 14px;;
+  color: #9799AE;
+  cursor: grab;
+}
+
+.ToDoListItem:active {
+  cursor: grabbing;
+}
+
+.ToDoListItem:last-child {
+  border-bottom: none;
+}
+
+.ItemWrapper {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.ToDoWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 428px;
+  box-sizing: border-box;
+}
+
+.ButtonWrapper {
+  display: flex;
+}
+
+.ItemIcon {
+  align-items: center;
+  height: 24px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.ItemIcon:hover {
+  opacity: 0.5;
+}
+
+.ItemText {
+  text-align: left;
+  color: var(--color-item-text);
+}
+
+.Button {
+  border: none;
+  background: #25273C;
+  cursor: pointer;
+}
+
+.Button:hover { 
+  opacity: 0.5;
+}
+
+.Check {
+  width: 20px;
+  height: 20px;
+  margin: 2px 22px 2px 2px;
+  background: var(--bg-checked-to-do);
+  border-radius: 50%;
+}
+
+.CheckBoldIcon {
+  margin: 0;
+}
+
+.CheckText {
+  color: var(--color-checked-item-text);
+  text-decoration: line-through;
+}

@@ -1,0 +1,45 @@
+.ToDoPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+}
+
+.ToDoWrapper {
+  width: 100%;
+  max-width: 600px;
+}
+
+.SearchWrapper,
+.FormWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 10px 20px;
+  width: 100%;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background: var(--bg-to-do-list-wrapper);
+
+  .IconWrapper {
+    margin-right: 20px;
+  }
+}
+
+.EmptyToDo {
+  color: var(--color-empty-to-do);
+}
+
+@media screen and (max-width: 767px) {
+  .ToDoWrapper {
+    width: 100%;
+    max-width: 380px;
+  }
+}
+
+@media screen and (max-width: 424px) {
+  .ToDoWrapper {
+    width: 100%;
+    max-width: 330px;
+  }
+}

@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Layout from "./hoc/Layout/Layout";
+import ToDoPage  from "./components/ToDoPage/ToDoPage";
+import { useState } from "react";
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { ChangeThemeContext } from "./context"
 
 function App() {
+
+  const [changeTheme, setChangeTheme] = useState("dark")
+
+  const onChangeThemeHandler = (changeTheme) => {
+    if (changeTheme === "dark") {
+      setChangeTheme("light")
+    } else {
+      setChangeTheme("dark")
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={changeTheme === "dark" ? "App" : "App Light"}>
+      <ChangeThemeContext.Provider value={{changeTheme}}>
+        <Layout onChangeThemeHandler={onChangeThemeHandler}>
+          <DndProvider backend={HTML5Backend}>
+            <ToDoPage />
+          </DndProvider>
+        </Layout>
+      </ChangeThemeContext.Provider>
     </div>
   );
 }
