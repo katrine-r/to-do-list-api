@@ -8,11 +8,13 @@ import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../../../../ItemTypes";
 
 const ToDoListItem = ({
-  textToDo, 
+  // textToDo, 
+  text, 
   id, 
   removeHandler, 
   checkToDoHandler, 
-  checked, 
+  // checked, 
+  completed, 
   viewOrEditToDoHandler,
   edit,
   editingToDoHandler,
@@ -20,6 +22,8 @@ const ToDoListItem = ({
   moveCardToDo,
   index
 }) => {
+
+  console.log('text from ListItem', text);
 
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
@@ -81,10 +85,12 @@ const ToDoListItem = ({
     >
       <div className={classes.ItemWrapper}>
         <span
-          className={classNames(classes.ItemIcon, { [classes.Check]: checked })}
+          // className={classNames(classes.ItemIcon, { [classes.Check]: checked })}
+          className={classNames(classes.ItemIcon, { [classes.Check]: completed })}
           onClick={() => checkToDoHandler(id)}
         >
-          { checked 
+          {/* { checked  */}
+          { completed
               ? <SVGiconsSelector id="checkBold" className={classes.CheckBoldIcon} /> 
               : <SVGiconsSelector id="checkboxBlankCircle" />
           }
@@ -94,16 +100,19 @@ const ToDoListItem = ({
       <div className={classes.ToDoWrapper}>
         { edit
             ? <Input 
-                value={textToDo} 
+                // value={textToDo} 
+                value={text} 
                 onChange={(ev) => editingToDoHandler(ev, id)} 
                 onKeyPress={(ev) => finishedEditingKeyEnterHandler(ev, id)} 
               />
             : <span
                 className={classNames(classes.ItemText, {
-                  [classes.CheckText]: checked
+                  // [classes.CheckText]: checked
+                  [classes.CheckText]: completed
                 })}
               >
-                {textToDo}
+                {/* {textToDo} */}
+                {text}
               </span>
         }
       </div>

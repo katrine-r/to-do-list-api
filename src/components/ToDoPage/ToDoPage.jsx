@@ -4,15 +4,18 @@ import Input from "../UI/Input/Input";
 import ToDoList from "./ToDoList/ToDoList";
 import { SVGiconsSelector } from "../UI/SVGiconsSelector/SVGiconsSelector";
 import update from "immutability-helper";
+import Button from "../UI/Button/Button";
+import { TodosService } from "../../api/TodosService";
 
 const ToDoPage = () => {
-  const [myToDo, setMyToDo] = useState(
-    () => {
-        const saved = localStorage.getItem("myToDo");
-        const initialValue = JSON.parse(saved);
-        return initialValue || [];
-      }
-    );
+  // const [myToDo, setMyToDo] = useState(
+  //   () => {
+  //       const saved = localStorage.getItem("myToDo");
+  //       const initialValue = JSON.parse(saved);
+  //       return initialValue || [];
+  //     }
+  //   );
+  const [myToDo, setMyToDo] = useState([]);
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
   const [filteredMyToDo, setFilteredMyToDo] = useState(myToDo)
@@ -20,7 +23,8 @@ const ToDoPage = () => {
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
-    const objToDo = { id: Date.now(), textToDo, checked: false, edit: false };
+    // const objToDo = { id: Date.now(), textToDo, checked: false, edit: false };
+    const objToDo = { id: Date.now(), textToDo, completed: false, edit: false };
     setMyToDo([...myToDo, objToDo]);
     setTextToDo("");
     setIsActive("all")
@@ -36,7 +40,8 @@ const ToDoPage = () => {
       console.log('i', i)
       console.log('id', id)
       if (i.id === id) {
-        return {...i, checked: !i.checked}     
+        // return {...i, checked: !i.checked}     
+        return {...i, completed: !i.completed}     
       } else {
         return i
       }
@@ -56,21 +61,26 @@ const ToDoPage = () => {
     if (checked === "all") {
       setFilteredMyToDo(myToDo)
     } else {
-      const filtered = [...myToDo].filter(i => i.checked === checked)
+      // const filtered = [...myToDo].filter(i => i.checked === checked)
+      const filtered = [...myToDo].filter(i => i.completed === checked)
       setFilteredMyToDo(filtered)
     }
     setIsActive(checked)
   }
 
-  const sortedActiveCompleted = (checked) => {
-    if (checked) {
+  // const sortedActiveCompleted = (checked) => {
+    const sortedActiveCompleted = (completed) => {
+    // if (checked) {
+      if (completed) {
       setFilteredMyToDo([...filteredMyToDo.sort((a, b) => {
-        return b.checked - a.checked
+        // return b.checked - a.checked
+        return b.completed - a.completed
       })
       ])
     } else {
       setFilteredMyToDo([...filteredMyToDo.sort((a, b) => {
-        return a.checked - b.checked
+        // return a.checked - b.checked
+        return a.completed - b.completed
       })
       ])
     }
@@ -79,6 +89,7 @@ const ToDoPage = () => {
   const sortedAlphabetical = (sorted) => {
     if (sorted === "ascending") {
       setFilteredMyToDo([...filteredMyToDo.sort((a, b) => {
+        // return a.textToDo.localeCompare(b.textToDo)
         return a.textToDo.localeCompare(b.textToDo)
       })
       ])
@@ -141,9 +152,21 @@ const ToDoPage = () => {
     }))
   }, [myToDo])
 
+  const getTodosHandler = async () => {
+    const response = await TodosService.getTodos();
+    const todos = await response.json();
+    console.log("response", response);
+    console.log("todos", todos);
+
+    const todosArray = todos.objects
+    setMyToDo(todosArray);
+  };
+
+  console.log('myToDo', myToDo);
+
   useEffect(() => {
     setFilteredMyToDo(myToDo)
-    window.localStorage.setItem("myToDo", JSON.stringify(myToDo));
+    // window.localStorage.setItem("myToDo", JSON.stringify(myToDo));
   }, [myToDo])
 
   return (
@@ -176,7 +199,7 @@ const ToDoPage = () => {
           />
         </form>
 
-        { myToDo.length 
+        { myToDo?.length 
           ? <ToDoList 
               filteredMyToDo={filterToDo} 
               removeHandler={removeHandler} 
@@ -191,9 +214,11 @@ const ToDoPage = () => {
               finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
               moveCardToDo={moveCardToDo}
             />
-          : <span className={classes.EmptyToDo}>
-              To-do list is empty
-            </span>
+          : <>
+              <span className={classes.EmptyToDo}>To-do list is empty</span>
+              <br />
+              <Button onClick={getTodosHandler}>Get todos</Button>
+            </>
         }
       </div>
     </div>
