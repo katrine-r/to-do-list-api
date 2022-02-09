@@ -51,7 +51,8 @@ const ToDoPage = () => {
 
   const filterToDo = useMemo(() => { 
     if (searchToDo) {
-      return filteredMyToDo.filter(i => i.textToDo.includes(searchToDo))
+      // return filteredMyToDo.filter(i => i.textToDo.includes(searchToDo))
+      return filteredMyToDo.filter(i => i.text.toLowerCase().includes(searchToDo))
     } else {
       return filteredMyToDo
     }
@@ -62,6 +63,7 @@ const ToDoPage = () => {
       setFilteredMyToDo(myToDo)
     } else {
       // const filtered = [...myToDo].filter(i => i.checked === checked)
+      // const filtered = [...myToDo].filter(i => i.completed === checked)
       const filtered = [...myToDo].filter(i => i.completed === checked)
       setFilteredMyToDo(filtered)
     }
@@ -90,19 +92,21 @@ const ToDoPage = () => {
     if (sorted === "ascending") {
       setFilteredMyToDo([...filteredMyToDo.sort((a, b) => {
         // return a.textToDo.localeCompare(b.textToDo)
-        return a.textToDo.localeCompare(b.textToDo)
+        return a.text.localeCompare(b.text)
       })
       ])
     } else {
       setFilteredMyToDo([...filteredMyToDo.sort((a, b) => {
-        return b.textToDo.localeCompare(a.textToDo)
+        // return b.textToDo.localeCompare(a.textToDo)
+        return b.text.localeCompare(a.text)
       })
       ])
     }
   }
 
   const removeCompletedToDoHandler = () => {
-    setMyToDo(myToDo.filter((i) => i.checked === false))
+    // setMyToDo(myToDo.filter((i) => i.checked === false))
+    setMyToDo(myToDo.filter((i) => i.completed === false))
     setIsActive("all")
   }
 
