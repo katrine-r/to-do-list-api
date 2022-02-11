@@ -1,0 +1,3 @@
+export const GET_MYTODO = 'GET_MYTODO'
+export const CHANGE_MYTODO = 'CHANGE_MYTODO'
+export const CHANGE_COMPLETED = 'CHANGE_COMPLETED'

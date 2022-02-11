@@ -19,6 +19,7 @@ const ToDoList = ({
   finishedEditingKeyEnterHandler,
   moveCardToDo
 }) => {
+  console.log('filteredMyToDo', filteredMyToDo)
 
   return (
     <div className={classes.ToDoList}>
