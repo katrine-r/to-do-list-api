@@ -23,8 +23,6 @@ const ToDoListItem = ({
   index
 }) => {
 
-  console.log('text from ListItem', text);
-
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.TEXTITEM, 

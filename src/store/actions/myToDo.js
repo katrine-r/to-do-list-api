@@ -1,19 +1,19 @@
-import { GET_MYTODO } from '../types'
-import { CHANGE_MYTODO } from '../types'
+import { GET_MYTODOLIST } from '../types'
+import { ADD_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
 
-export const getMyToDo = payload => {
+export const getMyToDoList = payload => {
   return {
-    type: GET_MYTODO,
+    type: GET_MYTODOLIST,
     payload
   }
 }
 
-export const changeMyToDo = payload => {
-    return {
-      type: CHANGE_MYTODO,
-      payload
-    }
+export const addToDo = payload => {
+  return {
+    type: ADD_TODO,
+    payload
+  }
 }
 
 export const changeCompleted = payload => {

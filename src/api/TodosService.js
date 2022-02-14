@@ -1,4 +1,5 @@
 const API_URL = process.env.REACT_APP_API_URL;
+const TOKEN = process.env.REACT_APP_TOKEN;
 
 class TodosService {
 
@@ -8,7 +9,7 @@ class TodosService {
          {
              'headers': {
                   'accept': 'application/json',
-                  'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NDQ2NzEyOTd9.jhqdy_b5LMWU7Xl0gc5VIz8yVBkTsQwFuEAke5IEA8k"
+                  'Authorization': `${TOKEN}`
              },
          }
     )
@@ -17,28 +18,24 @@ class TodosService {
     return myToDo
   }
 
-  // static getTodos() {
-  //   return fetch(
-  //       `${API_URL}/API/v1/todo/`,
-  //        {
-  //            'headers': {
-  //                 'accept': 'application/json',
-  //                 'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NDQ2NzEyOTd9.jhqdy_b5LMWU7Xl0gc5VIz8yVBkTsQwFuEAke5IEA8k"
-  //            },
-  //        }
-  //   )
-  // }
-
-  static postTodos() {
-    return fetch(
+  static async postTodos(objToDo) {
+    try {
+      const response = await fetch(
       `${API_URL}/API/v1/todos/`, 
       {
         method: 'POST',
-        // body: JSON.stringify(data),
+        body: JSON.stringify(objToDo),
         headers: {
+          'accept': 'application/json',
+          'Authorization': `${TOKEN}`,
           'Content-Type': 'application/json'
         }
       });
+      const json = await response.json();
+      console.log('Успех:', JSON.stringify(json));
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
   }
 
 }

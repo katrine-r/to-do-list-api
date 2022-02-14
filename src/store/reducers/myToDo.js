@@ -1,5 +1,5 @@
-import { GET_MYTODO } from "../types";
-import { CHANGE_MYTODO } from '../types'
+import { GET_MYTODOLIST } from "../types";
+import { ADD_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
 
 const initialState = {
@@ -9,12 +9,12 @@ const initialState = {
 
 const myToDoReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case GET_MYTODO:
+    case GET_MYTODOLIST:
       return {
         ...state,
         myToDo: payload
       };
-    case CHANGE_MYTODO:
+    case ADD_TODO:
       return {
         ...state,
         myToDo: payload
