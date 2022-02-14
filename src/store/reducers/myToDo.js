@@ -1,10 +1,11 @@
 import { GET_MYTODOLIST } from "../types";
 import { ADD_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
+import { FILTERED_MYTODOLIST } from '../types'
 
 const initialState = {
   myToDo: [],
-  completed: false,
+  filteredToDos: []
 };
 
 const myToDoReducer = (state = initialState, { type, payload }) => {
@@ -22,7 +23,12 @@ const myToDoReducer = (state = initialState, { type, payload }) => {
     case CHANGE_COMPLETED:
       return {
         ...state,
-        completed: payload
+        myToDo: state.completed = payload
+      };
+    case FILTERED_MYTODOLIST:
+      return {
+        ...state,
+        filteredToDos: payload
       };
     default:
       return state;

@@ -6,7 +6,6 @@ import { applyMiddleware, createStore } from 'redux';
 
 const rootReducer = combineReducers({
   myToDo: myToDoReducer,
-  completed: myToDoReducer
 })
 
 const store = createStore(

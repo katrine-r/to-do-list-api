@@ -7,8 +7,7 @@ import update from "immutability-helper";
 import Button from "../UI/Button/Button";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToDo, getMyToDoList } from "../../store/actions/myToDo";
-import { changeCompleted } from "../../store/actions/myToDo";
+import { addToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
 import Loader from "../UI/Loader/Loader";
 
 const ToDoPage = () => {
@@ -21,14 +20,14 @@ const ToDoPage = () => {
   //   );
 
   const dispatch = useDispatch();
-  const { myToDo } = useSelector((state) => state.myToDo);
-  const { completed } = useSelector((state) => state.completed);
+  const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
   console.log("myToDoReducer", myToDo);
+  console.log('filteredToDos', filteredToDos)
 
   // const [myToDo, setMyToDo] = useState([]);
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
-  const [filteredMyToDo, setFilteredMyToDo] = useState(myToDo);
+  // const [filteredMyToDo, setFilteredMyToDo] = useState(myToDo);
   const [isActive, setIsActive] = useState("all");
 
   const handleSubmit = async (ev) => {
@@ -37,7 +36,6 @@ const ToDoPage = () => {
     const objToDo = { text: textToDo, completed: false };
     const postMyToDo = await TodosService.postTodos(objToDo);
     dispatch(addToDo([objToDo, ...myToDo]));
-    // setMyToDo([...myToDo, objToDo]);
     setTextToDo("");
     setIsActive("all");
   };
@@ -48,74 +46,67 @@ const ToDoPage = () => {
   };
 
   const checkToDoHandler = (id) => {
-    const checkMyToDo = myToDo.map((i) => {
+      const checkMyToDo = myToDo.map((i) => {
       console.log("i", i);
       console.log("id", id);
       if (i.id === id) {
-        // return { ...i, completed: dispatch(changeCompleted(!completed)) };
         return { ...i, completed: !i.completed };
-        // return dispatch(changeCompleted(!completed))
       } else {
         return i;
       }
     });
-    console.log("completed", completed);
-    // dispatch(changeMyToDo(checkMyToDo));
-    // setMyToDo(checkMyToDo)
+    dispatch(changeCompleted(checkMyToDo));
   };
 
   const filterToDo = useMemo(() => {
     if (searchToDo) {
-      // return filteredMyToDo.filter((i) =>
-      return myToDo.filter((i) =>
+      return filteredToDos.filter((i) =>
         i.text.toLowerCase().includes(searchToDo)
       );
     } else {
-      // return filteredMyToDo;
-      return myToDo;
+      return filteredToDos;
     }
-  // }, [searchToDo, filteredMyToDo]);  
-  }, [searchToDo, myToDo]);
+  }, [searchToDo, filteredToDos]);
 
   const filteredActiveCompleted = (checked) => {
     if (checked === "all") {
-      setFilteredMyToDo(myToDo);
+      dispatch(filteredMyToDoList(myToDo));
     } else {
-      const filtered = [...myToDo].filter((i) => i.completed === checked);
-      setFilteredMyToDo(filtered);
+      const filtered = [...myToDo.filter((i) => i.completed === checked)];
+      dispatch(filteredMyToDoList(filtered));
     }
     setIsActive(checked);
   };
 
   const sortedActiveCompleted = (completed) => {
     if (completed) {
-      setFilteredMyToDo([
-        ...filteredMyToDo.sort((a, b) => {
+      dispatch(filteredMyToDoList([
+        ...myToDo.sort((a, b) => {
           return b.completed - a.completed;
         })
-      ]);
+      ]));
     } else {
-      setFilteredMyToDo([
-        ...filteredMyToDo.sort((a, b) => {
+      dispatch(filteredMyToDoList([
+        ...myToDo.sort((a, b) => {
           return a.completed - b.completed;
         })
-      ]);
+      ]));
     }
   };
 
   const sortedAlphabetical = (sorted) => {
     if (sorted === "ascending") {
-      setFilteredMyToDo([
-        ...filteredMyToDo.sort((a, b) => {
+      dispatch(filteredMyToDoList([
+        ...myToDo.sort((a, b) => {
           return a.text.localeCompare(b.text);
         })
-      ]);
+      ]));
     } else {
-      setFilteredMyToDo([
-        ...filteredMyToDo.sort((a, b) => {
+      dispatch(filteredMyToDoList([
+        ...myToDo.sort((a, b) => {
           return b.text.localeCompare(a.text);
         })
-      ]);
+      ]));
     }
   };
 
@@ -178,10 +169,13 @@ const ToDoPage = () => {
   useEffect(async () => {
     const myToDo = await TodosService.getTodos();
     dispatch(getMyToDoList(myToDo));
-    setFilteredMyToDo(myToDo);
 
     // window.localStorage.setItem("myToDo", JSON.stringify(myToDo));
   }, []);
+
+  useEffect(() => {
+    dispatch(filteredMyToDoList(myToDo));
+  }, [myToDo])
 
   return (
     <div className={classes.ToDoPage}>
