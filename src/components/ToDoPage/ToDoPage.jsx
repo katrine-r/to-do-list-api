@@ -22,7 +22,7 @@ const ToDoPage = () => {
   const dispatch = useDispatch();
   const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
   console.log("myToDoReducer", myToDo);
-  console.log('filteredToDos', filteredToDos)
+  // console.log('filteredToDos', filteredToDos)
 
   // const [myToDo, setMyToDo] = useState([]);
   const [textToDo, setTextToDo] = useState("");
@@ -34,7 +34,7 @@ const ToDoPage = () => {
     ev.preventDefault();
     // const objToDo = { id: Date.now(), textToDo, completed: false, edit: false };
     const objToDo = { text: textToDo, completed: false };
-    const postMyToDo = await TodosService.postTodos(objToDo);
+    await TodosService.postTodos(objToDo);
     dispatch(addToDo([objToDo, ...myToDo]));
     setTextToDo("");
     setIsActive("all");
@@ -45,7 +45,7 @@ const ToDoPage = () => {
     setIsActive("all");
   };
 
-  const checkToDoHandler = (id) => {
+  const checkToDoHandler = async (id) => {
       const checkMyToDo = myToDo.map((i) => {
       console.log("i", i);
       console.log("id", id);
@@ -56,6 +56,13 @@ const ToDoPage = () => {
       }
     });
     dispatch(changeCompleted(checkMyToDo));
+
+    const toDoById = myToDo.find((i) => i.id === id);
+    toDoById.completed = !toDoById.completed;
+    console.log("toDoById", toDoById);
+
+    await TodosService.putTodoById(id, toDoById);
+    console.log("id", id);
   };
 
   const filterToDo = useMemo(() => {

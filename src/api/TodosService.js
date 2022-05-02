@@ -38,6 +38,27 @@ class TodosService {
     }
   }
 
+  static async putTodoById(id, toDoById) {
+    console.log("id fetch put", id);
+    console.log("id fetch put obj", toDoById);
+
+    try {
+      const response = await fetch(`${API_URL}/API/v1/todos/${id}/`, {
+        method: "PUT",
+        body: JSON.stringify(toDoById),
+        headers: {
+          accept: "application/json",
+          Authorization: `${TOKEN}`,
+          "Content-Type": "application/json"
+        }
+      });
+      const json = await response.json();
+      console.log("Успех:", JSON.stringify(json));
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  }
+
 }
 
 export default TodosService
