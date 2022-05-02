@@ -7,7 +7,7 @@ import update from "immutability-helper";
 import Button from "../UI/Button/Button";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
+import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
 import Loader from "../UI/Loader/Loader";
 
 const ToDoPage = () => {
@@ -22,7 +22,7 @@ const ToDoPage = () => {
   const dispatch = useDispatch();
   const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
   console.log("myToDoReducer", myToDo);
-  // console.log('filteredToDos', filteredToDos)
+  // console.log('filteredToDos', filteredToDos);
 
   // const [myToDo, setMyToDo] = useState([]);
   const [textToDo, setTextToDo] = useState("");
@@ -40,9 +40,16 @@ const ToDoPage = () => {
     setIsActive("all");
   };
 
-  const removeHandler = (id) => {
-    // setMyToDo(myToDo.filter((i) => i.id !== id));
+  const removeHandler = async (id) => {
+    const removeToDoFilter = myToDo.filter((i) => i.id !== id);
+    dispatch(removeToDo(removeToDoFilter));
     setIsActive("all");
+
+    const toDoById = myToDo.find(i => i.id === id);
+    console.log("id", id);
+    
+    console.log('removeToDoById', toDoById);
+    await TodosService.deleteTodoById(id, toDoById);
   };
 
   const checkToDoHandler = async (id) => {
@@ -118,7 +125,7 @@ const ToDoPage = () => {
   };
 
   const removeCompletedToDoHandler = () => {
-    // setMyToDo(myToDo.filter((i) => i.completed === false))
+    // setMyToDo(myToDo.filter((i) => i.completed === false));
     setIsActive("all");
   };
 
@@ -144,7 +151,7 @@ const ToDoPage = () => {
         return i;
       }
     });
-    // setMyToDo(editingToDo)
+    // setMyToDo(editingToDo);
   };
 
   const finishedEditingKeyEnterHandler = (ev, id) => {
@@ -155,7 +162,7 @@ const ToDoPage = () => {
         return i;
       }
     });
-    // setMyToDo(finishedEditingKey)
+    // setMyToDo(finishedEditingKey);
   };
 
   const moveCardToDo = useCallback(
@@ -166,7 +173,7 @@ const ToDoPage = () => {
       //     [dragIndex, 1],
       //     [hoverIndex, 0, dragCardToDo],
       //   ],
-      // }))
+      // }));
     },
     [myToDo]
   );

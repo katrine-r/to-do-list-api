@@ -59,6 +59,25 @@ class TodosService {
     }
   }
 
+  static async deleteTodoById(id, toDoById) {
+    console.log("id fetch delete", id);
+    console.log("id fetch delete obj", toDoById);
+
+    try {
+      await fetch(`${API_URL}/API/v1/todos/${id}/`, {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          Authorization: `${TOKEN}`,
+          "Content-Type": "application/json"
+        }
+      });
+      console.log("Успех:", toDoById);
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  }
+
 }
 
 export default TodosService

@@ -1,5 +1,6 @@
 import { GET_MYTODOLIST } from "../types";
 import { ADD_TODO } from '../types'
+import { REMOVE_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
 import { FILTERED_MYTODOLIST } from '../types'
 
@@ -16,6 +17,11 @@ const myToDoReducer = (state = initialState, { type, payload }) => {
         myToDo: payload
       };
     case ADD_TODO:
+      return {
+        ...state,
+        myToDo: payload
+      };
+    case REMOVE_TODO:
       return {
         ...state,
         myToDo: payload
