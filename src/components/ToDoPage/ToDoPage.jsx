@@ -124,9 +124,18 @@ const ToDoPage = () => {
     }
   };
 
-  const removeCompletedToDoHandler = () => {
-    // setMyToDo(myToDo.filter((i) => i.completed === false));
+  const removeCompletedToDoHandler = async () => {
+    const removeCompletedToDos = myToDo.filter((i) => i.completed === false)
+    dispatch(removeToDo(removeCompletedToDos));
     setIsActive("all");
+
+    const todosId = myToDo.filter((i) => i.completed === true);
+    console.log('todosId', todosId);
+
+    const completedToDos = todosId.map(i => TodosService.deleteTodoById(i.id, i));
+    
+    const results = await Promise.all(completedToDos);
+    console.log('results promise', results);
   };
 
   const viewOrEditToDoHandler = (id) => {
@@ -139,6 +148,7 @@ const ToDoPage = () => {
       }
     });
     // setMyToDo(viewOrEditToDo)
+    // dispatch(myToDo)
   };
 
   const editingToDoHandler = (ev, id) => {
