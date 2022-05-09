@@ -38,6 +38,8 @@ const ToDoPage = () => {
     dispatch(addToDo([objToDo, ...myToDo]));
     setTextToDo("");
     setIsActive("all");
+    const updateNewToDoList = await TodosService.getTodos()
+    dispatch(getMyToDoList(updateNewToDoList))
   };
 
   const removeHandler = async (id) => {
@@ -75,7 +77,7 @@ const ToDoPage = () => {
   const filterToDo = useMemo(() => {
     if (searchToDo) {
       return filteredToDos.filter((i) =>
-        i.text.toLowerCase().includes(searchToDo)
+        i.text.toUpperCase().toLowerCase().includes(searchToDo)
       );
     } else {
       return filteredToDos;
