@@ -140,28 +140,26 @@ const ToDoPage = () => {
 
   const viewOrEditToDoHandler = (id) => {
     const viewOrEditToDo = myToDo.map((i) => {
-      console.log("viewOrEditToDo i ", i);
       if (i.id === id) {
         return { ...i, edit: !i.edit };
       } else {
         return i;
       }
     });
-    // setMyToDo(viewOrEditToDo)
-    // dispatch(myToDo)
+    dispatch(getMyToDoList(viewOrEditToDo))
   };
-
+  
   const editingToDoHandler = (ev, id) => {
     console.log("ev ", ev.target.value);
     console.log("id ", id);
     const editingToDo = myToDo.map((i) => {
       if (i.id === id) {
-        return { ...i, textToDo: ev.target.value };
+        return { ...i, text: ev.target.value };
       } else {
         return i;
       }
     });
-    // setMyToDo(editingToDo);
+    dispatch(getMyToDoList(editingToDo))
   };
 
   const finishedEditingKeyEnterHandler = (ev, id) => {
@@ -172,8 +170,17 @@ const ToDoPage = () => {
         return i;
       }
     });
-    // setMyToDo(finishedEditingKey);
+    dispatch(getMyToDoList(finishedEditingKey));
+
+    if (ev.key === "Enter") {
+      editedToDoFetch(id);
+    }
   };
+
+  const editedToDoFetch = async (id) => {
+    const toDoById = myToDo.find(i => i.id === id);
+    await TodosService.putTodoById(id, toDoById);
+  }
 
   const moveCardToDo = useCallback(
     (dragIndex, hoverIndex) => {
