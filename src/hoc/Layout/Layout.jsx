@@ -1,23 +1,18 @@
 import React from "react";
 import classes from "./Layout.module.scss";
-import HeaderBackground from "../../components/HeaderBackground/HeaderBackground"
-import HeaderTitle from '../../components/HeaderTitle/HeaderTitle'
+import NavBar from "../../components/UI/NavBar/NavBar";
+import { Outlet } from "react-router-dom";
 
-const Layout = ({ onChangeThemeHandler, children }) => {
+const Layout = ({isAuth, setIsAuth, onChangeThemeHandler }) => {
 
   return (
     <div className={classes.Layout}>
-      <main>
-        <div className={classes.Header}>
-          <HeaderBackground />
-          <div className={classes.HeaderWrapper}>
-            <div className={classes.HeaderTitleWrapper}>
-              <HeaderTitle onChangeThemeHandler={onChangeThemeHandler} />
-            </div>
-            { children }
-          </div>
-        </div>
-      </main>
+      <NavBar 
+        isAuth={isAuth} 
+        setIsAuth={setIsAuth}
+        onChangeThemeHandler={onChangeThemeHandler} 
+      />
+      <Outlet />
     </div>
   );
 };

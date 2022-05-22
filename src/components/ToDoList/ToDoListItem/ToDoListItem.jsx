@@ -1,19 +1,17 @@
 import React, { useRef } from "react";
 import classes from "./ToDoListItem.module.scss";
-import { SVGiconsSelector } from "../../../UI/SVGiconsSelector/SVGiconsSelector";
+import { SVGiconsSelector } from "../../UI/SVGiconsSelector/SVGiconsSelector";
 import classNames from "classnames";
-import Button from "../../../UI/Button/Button";
-import Input from "../../../UI/Input/Input";
+import Button from "../../UI/Button/Button";
+import Input from "../../UI/Input/Input";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../../../../ItemTypes";
+import { ItemTypes } from "../../../ItemTypes";
 
 const ToDoListItem = ({
-  // textToDo, 
   text, 
   id, 
   removeHandler, 
   checkToDoHandler, 
-  // checked, 
   completed, 
   viewOrEditToDoHandler,
   edit,
@@ -83,11 +81,9 @@ const ToDoListItem = ({
     >
       <div className={classes.ItemWrapper}>
         <span
-          // className={classNames(classes.ItemIcon, { [classes.Check]: checked })}
           className={classNames(classes.ItemIcon, { [classes.Check]: completed })}
           onClick={() => checkToDoHandler(id)}
         >
-          {/* { checked  */}
           { completed
               ? <SVGiconsSelector id="checkBold" className={classes.CheckBoldIcon} /> 
               : <SVGiconsSelector id="checkboxBlankCircle" />
@@ -97,21 +93,18 @@ const ToDoListItem = ({
       
       <div className={classes.ToDoWrapper}>
         { edit
-            ? <Input 
-                // value={textToDo} 
-                value={text} 
-                onChange={(ev) => editingToDoHandler(ev, id)} 
-                onKeyPress={(ev) => finishedEditingKeyEnterHandler(ev, id)} 
-              />
-            : <span
-                className={classNames(classes.ItemText, {
-                  // [classes.CheckText]: checked
-                  [classes.CheckText]: completed
-                })}
-              >
-                {/* {textToDo} */}
-                {text}
-              </span>
+          ? <Input  
+              value={text} 
+              onChange={(ev) => editingToDoHandler(ev, id)} 
+              onKeyPress={(ev) => finishedEditingKeyEnterHandler(ev, id)} 
+            />
+          : <span
+              className={classNames(classes.ItemText, {
+                [classes.CheckText]: completed
+              })}
+            >
+              {text}
+            </span>
         }
       </div>
 

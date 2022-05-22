@@ -1,0 +1,47 @@
+.SignIn {
+    position: relative;
+    top: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .FormSignIn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .Title {
+        color: var(--color-empty-to-do);
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-bottom: 50px;
+    }
+
+    .Input {
+        width: 200px;
+        margin-bottom: 30px;
+        padding: 10px 20px;
+        outline: none;
+        border: 1px solid #9799ae;
+        border-radius: 5px;
+        color: #5B5D72;
+        background: none;
+        box-sizing: border-box;
+    }
+
+    .Button {
+        width: 200px;
+        padding: 10px 70px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        background: var(--bg-linear-gradient-header);
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .Button:hover {
+        opacity: 0.5;
+    }
+}

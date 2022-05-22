@@ -2,8 +2,8 @@ import React from "react";
 import classes from "./ToDoList.module.scss";
 import ToDoListItem from "./ToDoListItem/ToDoListItem";
 import classNames from "classnames";
-import { SVGiconsSelector } from "../../UI/SVGiconsSelector/SVGiconsSelector";
-import Button from "../../UI/Button/Button";
+import { SVGiconsSelector } from "../UI/SVGiconsSelector/SVGiconsSelector";
+import Button from "../UI/Button/Button";
 
 const ToDoList = ({
   removeHandler, 
@@ -30,11 +30,9 @@ const ToDoList = ({
               key={index}
               index={index}
               id={textItem.id}
-              // textToDo={textItem.textToDo}
               text={textItem.text}
               removeHandler={removeHandler}
               checkToDoHandler={checkToDoHandler}
-              // checked={textItem.checked}
               completed={textItem.completed}
               viewOrEditToDoHandler={viewOrEditToDoHandler}
               edit={textItem.edit}

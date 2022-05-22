@@ -1,14 +1,13 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import classes from "./ToDoPage.module.scss";
-import Input from "../UI/Input/Input";
-import ToDoList from "./ToDoList/ToDoList";
-import { SVGiconsSelector } from "../UI/SVGiconsSelector/SVGiconsSelector";
+import Input from "../../components/UI/Input/Input"
+import ToDoList from "../../components/ToDoList/ToDoList"
+import { SVGiconsSelector } from "../../components/UI/SVGiconsSelector/SVGiconsSelector";
 import update from "immutability-helper";
-import Button from "../UI/Button/Button";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
-import Loader from "../UI/Loader/Loader";
+import Loader from "../../components/UI/Loader/Loader";
 
 const ToDoPage = () => {
   // const [myToDo, setMyToDo] = useState(
@@ -22,17 +21,13 @@ const ToDoPage = () => {
   const dispatch = useDispatch();
   const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
   console.log("myToDoReducer", myToDo);
-  // console.log('filteredToDos', filteredToDos);
 
-  // const [myToDo, setMyToDo] = useState([]);
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
-  // const [filteredMyToDo, setFilteredMyToDo] = useState(myToDo);
   const [isActive, setIsActive] = useState("all");
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    // const objToDo = { id: Date.now(), textToDo, completed: false, edit: false };
     const objToDo = { text: textToDo, completed: false };
     await TodosService.postTodos(objToDo);
     dispatch(addToDo([objToDo, ...myToDo]));
@@ -186,15 +181,18 @@ const ToDoPage = () => {
 
   const moveCardToDo = useCallback(
     (dragIndex, hoverIndex) => {
-      const dragCardToDo = myToDo[dragIndex];
-      // setMyToDo(update(myToDo, {
-      //   $splice: [
-      //     [dragIndex, 1],
-      //     [hoverIndex, 0, dragCardToDo],
-      //   ],
-      // }));
+      const dragCardToDo = filteredToDos[dragIndex];
+
+      dispatch(filteredMyToDoList(
+        update(filteredToDos, {
+            $splice: [
+              [dragIndex, 1],
+              [hoverIndex, 0, dragCardToDo],
+            ],
+          })
+      ))
     },
-    [myToDo]
+    [filteredToDos]
   );
 
   console.log("myToDo", myToDo);

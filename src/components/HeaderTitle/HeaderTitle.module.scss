@@ -10,6 +10,25 @@
     text-transform: uppercase;
     letter-spacing: 0.4em;
   }
+
+  nav {
+    display: flex;
+    gap: 40px;
+
+    a.active {
+      color: #555;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .SignOut {
+      color: #fff;
+      cursor: pointer;
+    }
+  }
 }
 
 .Button {
@@ -18,7 +37,9 @@
   cursor: pointer;
 }
 
-.Button:hover {
+.Button:hover,
+.SignOut:hover,
+nav a:hover {
   opacity: 0.5;
 }
 
