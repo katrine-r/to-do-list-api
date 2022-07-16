@@ -1,5 +1,10 @@
 const API_URL = process.env.REACT_APP_API_URL;
-const TOKEN = process.env.REACT_APP_TOKEN;
+
+function saveToken(token) {
+  const tokenData = JSON.parse(token)
+  window.localStorage.setItem('tokenAccess', tokenData.access_token)
+  window.localStorage.setItem('tokenType', tokenData.token_type)
+}
 
 class TodosService {
 
@@ -7,10 +12,10 @@ class TodosService {
     const response = await fetch(
         `${API_URL}/API/v1/todo/`,
          {
-             'headers': {
-                  'accept': 'application/json',
-                  'Authorization': `${TOKEN}`
-             },
+            'headers': {
+              'accept': 'application/json',
+              'Authorization': `${window.localStorage.getItem('tokenType')} ${window.localStorage.getItem('tokenAccess')}`                                  
+            },
          }
     )
     const todos = await response.json();
@@ -27,7 +32,7 @@ class TodosService {
         body: JSON.stringify(objToDo),
         headers: {
           'accept': 'application/json',
-          'Authorization': `${TOKEN}`,
+          'Authorization': `${window.localStorage.getItem('tokenType')} ${window.localStorage.getItem('tokenAccess')}`,                  
           'Content-Type': 'application/json'
         }
       });
@@ -39,43 +44,78 @@ class TodosService {
   }
 
   static async putTodoById(id, toDoById) {
-    console.log("id fetch put", id);
-    console.log("id fetch put obj", toDoById);
-
     try {
       const response = await fetch(`${API_URL}/API/v1/todos/${id}/`, {
-        method: "PUT",
+        method: 'PUT',
         body: JSON.stringify(toDoById),
         headers: {
-          accept: "application/json",
-          Authorization: `${TOKEN}`,
-          "Content-Type": "application/json"
+          accept: 'application/json',
+          'Authorization': `${window.localStorage.getItem('tokenType')} ${window.localStorage.getItem('tokenAccess')}`,
+          'Content-Type': 'application/json'
         }
       });
       const json = await response.json();
-      console.log("Успех:", JSON.stringify(json));
+      console.log('Успех:', JSON.stringify(json));
     } catch (error) {
-      console.error("Ошибка:", error);
+      console.error('Ошибка:', error);
     }
   }
 
   static async deleteTodoById(id, toDoById) {
-    console.log("id fetch delete", id);
-    console.log("id fetch delete obj", toDoById);
-
     try {
       await fetch(`${API_URL}/API/v1/todos/${id}/`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          accept: "application/json",
-          Authorization: `${TOKEN}`,
-          "Content-Type": "application/json"
+          accept: 'application/json',
+          'Authorization': `${window.localStorage.getItem('tokenType')} ${window.localStorage.getItem('tokenAccess')}`,
+          'Content-Type': 'application/json'
         }
       });
-      console.log("Успех:", toDoById);
+      console.log('Успех:', toDoById);
     } catch (error) {
-      console.error("Ошибка:", error);
+      console.error('Ошибка:', error);
     }
+  }
+
+  static async postCreateUsers(objNewUser) {
+    try {
+      const response = await fetch(
+      `${API_URL}/API/v1/users/`, 
+      {
+        method: 'POST',
+        body: JSON.stringify(objNewUser),
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      const json = await response.json();
+      console.log('Успех:', JSON.stringify(json));
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+    console.log('postUsers', objNewUser)
+  }
+
+  static async postLoginUser(objUser) {
+    try {
+      const response = await fetch(
+      `${API_URL}/API/v1/token`, 
+      {
+        method: 'POST',
+        body: JSON.stringify(objUser),
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+        const token = await response.json();
+        saveToken(JSON.stringify(token))
+        console.log('Успех:', JSON.stringify(token));
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+    console.log('postLoginUser', objUser)
   }
 
 }
