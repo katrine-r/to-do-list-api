@@ -8,15 +8,9 @@ import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
 import Loader from "../../components/UI/Loader/Loader";
+import { useFetching } from "../../hooks/useFetching";
 
 const ToDoPage = () => {
-  // const [myToDo, setMyToDo] = useState(
-  //   () => {
-  //       const saved = localStorage.getItem("myToDo");
-  //       const initialValue = JSON.parse(saved);
-  //       return initialValue || [];
-  //     }
-  //   );
 
   const dispatch = useDispatch();
   const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
@@ -25,16 +19,22 @@ const ToDoPage = () => {
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
   const [isActive, setIsActive] = useState("all");
+  const [fetching, isLoading, error] = useFetching(async () => {
+    const myToDo = await TodosService.getTodos();
+    dispatch(getMyToDoList(myToDo));
+  });
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    const objToDo = { text: textToDo, completed: false };
-    await TodosService.postTodos(objToDo);
-    dispatch(addToDo([objToDo, ...myToDo]));
-    setTextToDo("");
-    setIsActive("all");
-    const updateNewToDoList = await TodosService.getTodos()
-    dispatch(getMyToDoList(updateNewToDoList))
+    if (textToDo != '') {
+      const objToDo = { text: textToDo, completed: false };
+      await TodosService.postTodos(objToDo);
+      dispatch(addToDo([objToDo, ...myToDo]));
+      setTextToDo("");
+      setIsActive("all");
+      const updateNewToDoList = await TodosService.getTodos()
+      dispatch(getMyToDoList(updateNewToDoList))
+    }
   };
 
   const removeHandler = async (id) => {
@@ -197,11 +197,8 @@ const ToDoPage = () => {
 
   console.log("myToDo", myToDo);
 
-  useEffect(async () => {
-    const myToDo = await TodosService.getTodos();
-    dispatch(getMyToDoList(myToDo));
-
-    // window.localStorage.setItem("myToDo", JSON.stringify(myToDo));
+  useEffect(() => {
+    fetching()
   }, []);
 
   useEffect(() => {
@@ -237,25 +234,27 @@ const ToDoPage = () => {
           />
         </form>
 
-        {
-          myToDo?.length ? (
-            <ToDoList
-              filteredMyToDo={filterToDo}
-              removeHandler={removeHandler}
-              checkToDoHandler={checkToDoHandler}
-              filteredActiveCompleted={filteredActiveCompleted}
-              isActive={isActive}
-              sortedActiveCompleted={sortedActiveCompleted}
-              sortedAlphabetical={sortedAlphabetical}
-              removeCompletedToDoHandler={removeCompletedToDoHandler}
-              viewOrEditToDoHandler={viewOrEditToDoHandler}
-              editingToDoHandler={editingToDoHandler}
-              finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
-              moveCardToDo={moveCardToDo}
-            />
-          ) : (
+        { 
+          isLoading ? 
             <Loader />
-          )
+            : myToDo?.length ? (
+              <ToDoList
+                filteredMyToDo={filterToDo}
+                removeHandler={removeHandler}
+                checkToDoHandler={checkToDoHandler}
+                filteredActiveCompleted={filteredActiveCompleted}
+                isActive={isActive}
+                sortedActiveCompleted={sortedActiveCompleted}
+                sortedAlphabetical={sortedAlphabetical}
+                removeCompletedToDoHandler={removeCompletedToDoHandler}
+                viewOrEditToDoHandler={viewOrEditToDoHandler}
+                editingToDoHandler={editingToDoHandler}
+                finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
+                moveCardToDo={moveCardToDo}
+              />
+            ) : (
+              <span className={classes.EmptyToDo}>To-do list is empty</span>
+            )
         }
       </div>
     </div>

@@ -24,6 +24,7 @@ body {
   --bg-checked-to-do: linear-gradient(45deg, #2d18a1 0%, #781c73 100%);
   --color-item-text: #9799ae;
   --color-checked-item-text: #3f4156;
+  --color-loader: #2d18a1;
 }
 
 .Light {
@@ -37,4 +38,5 @@ body {
   --bg-checked-to-do: linear-gradient(45deg, #b763ef 0%, #73a5fc 100%);
   --color-item-text: #3f4156;
   --color-checked-item-text: #9799ae;
+  --color-loader: #b763ef;
 }

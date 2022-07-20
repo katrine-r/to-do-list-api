@@ -23,12 +23,12 @@ const HeaderTitle = ({
   return (
     <div className={classes.HeaderTitle}>
       <div>
-        <h1 className={classes.Title}>ToDo</h1>
+        <NavLink to="/" className={classes.Title}>ToDo</NavLink>
       </div>
       <nav>
         { isAuth 
         ? <>
-            <NavLink to="/">To Do List</NavLink>
+            <NavLink to="/">To Do</NavLink>
             <span className={classes.SignOut} onClick={clickSignOutHandler}>Sign Out</span>
           </>
         : <>

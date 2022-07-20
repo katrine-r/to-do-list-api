@@ -54,7 +54,6 @@ function App() {
                   <Route path="/signup" element={<SignUp />} />
                   </Route>
                   <Route path="*" element={<Navigate to={isAuth ? "/" : "/signin"} />} /> 
-                    {/* page not found 404 create */}
                   </Routes>
               </BrowserRouter>          
             </DndProvider>

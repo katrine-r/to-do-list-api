@@ -3,7 +3,7 @@ import HeaderBackground from "../../HeaderBackground/HeaderBackground";
 import HeaderTitle from "../../HeaderTitle/HeaderTitle";
 import classes from "./NavBar.module.scss";
 
-const NavBar = ({isAuth, setIsAuth, onChangeThemeHandler}) => {
+const NavBar = ({ isAuth, setIsAuth, onChangeThemeHandler }) => {
     return (
         <div className={classes.NavBar}>
             <main>

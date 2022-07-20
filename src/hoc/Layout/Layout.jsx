@@ -3,7 +3,7 @@ import classes from "./Layout.module.scss";
 import NavBar from "../../components/UI/NavBar/NavBar";
 import { Outlet } from "react-router-dom";
 
-const Layout = ({isAuth, setIsAuth, onChangeThemeHandler }) => {
+const Layout = ({ isAuth, setIsAuth, onChangeThemeHandler }) => {
 
   return (
     <div className={classes.Layout}>
