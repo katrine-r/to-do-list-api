@@ -112,6 +112,7 @@ class TodosService {
         const token = await response.json();
         saveToken(JSON.stringify(token))
         console.log('Успех:', JSON.stringify(token));
+        window.localStorage.setItem('status', response.status)
     } catch (error) {
       console.error('Ошибка:', error);
     }

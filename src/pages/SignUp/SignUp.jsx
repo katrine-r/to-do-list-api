@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import classes from "./SignUp.module.scss";
-import Input from "./../../components/UI/Input/Input";
-import validator from "validator";
-import TodosService from "../../api/TodosService";
+import React, { useState } from 'react';
+import classes from './SignUp.module.scss';
+import Input from './../../components/UI/Input/Input';
+import validator from 'validator';
+import TodosService from '../../api/TodosService';
 
 const SignUp = () => {
     const [register, setRegister] = useState(() => {
@@ -13,9 +13,11 @@ const SignUp = () => {
             password2: ''
         }
     })
+    const [error, setError] = useState('')
 
     const changeValueRegister = event => {
         event.persist()
+        setError('')
         setRegister(prev => {
             return {
                 ...prev,
@@ -28,17 +30,26 @@ const SignUp = () => {
     const submitRegisterHandler = async (event) => {
         event.preventDefault()
 
-        if (register.username === '') {
-            alert("Please enter name")
+        if (register.username === '' || register.email === '' || 
+            register.password1 === '' || register.password2 === '') {
+                setError('Please enter all data')
         } else if (!validator.isEmail(register.email)) {
-            alert("Please enter correct email")
+            setError('Please enter correct email')
         } else if (register.password1 !== register.password2) {
-            alert("Repeated password incorrectly")
+            setError('Repeated password incorrectlyl')
         } else if (!validator.isStrongPassword(register.password1, {minSymbols: 0})) {
-            alert("Password must consist of one lowercase, uppercase letter and number, at least 8 characters")
+            setError('Password must consist of one lowercase, uppercase letter and number, at least 8 characters')
         } else {
-            const objNewUser = {name: register.username, email: register.email, password: register.password1}
+            const objNewUser = {
+                name: register.username, 
+                email: register.email, 
+                password: register.password1
+            }
             await TodosService.postCreateUsers(objNewUser)
+            const status = Number(window.localStorage.getItem('status'))
+            if (status !== 200) {
+                setError('This user is already registered')
+            }
         }
 
         console.log('register', register)
@@ -80,6 +91,7 @@ const SignUp = () => {
                     value={register.password2}
                     onChange={changeValueRegister}
                 />
+                <span className={classes.Error}>{error}</span>
                 <input type="submit" value="Sign Up" className={classes.Button} />
             </form>
         </div>

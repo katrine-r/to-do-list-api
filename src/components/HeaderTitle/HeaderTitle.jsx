@@ -6,19 +6,21 @@ import Button from '../UI/Button/Button'
 import { ChangeThemeContext } from '../../context'
 import { NavLink, useNavigate } from 'react-router-dom'
 
-const HeaderTitle = ({ 
-  isAuth, 
-  setIsAuth, 
-  onChangeThemeHandler 
-}) => {
+const HeaderTitle = ({ setIsAuth, onChangeThemeHandler }) => {
 
-  const {changeTheme} = useContext(ChangeThemeContext)
+  const { changeTheme } = useContext(ChangeThemeContext)
   const navigate = useNavigate()
   const clickSignOutHandler = () => {
       setIsAuth(false)
       navigate('/signin')
-      localStorage.removeItem("isAuth")
+      localStorage.removeItem('isAuth')
+      localStorage.removeItem('status')
+      localStorage.removeItem('tokenType')
+      localStorage.removeItem('tokenAccess')
   }
+
+  const token = window.localStorage.getItem('tokenAccess')
+  const status = Number(window.localStorage.getItem('status'))
 
   return (
     <div className={classes.HeaderTitle}>
@@ -26,14 +28,14 @@ const HeaderTitle = ({
         <NavLink to="/" className={classes.Title}>ToDo</NavLink>
       </div>
       <nav>
-        { isAuth 
-        ? <>
+        { token && status === 200 ?
+          <>
             <NavLink to="/">To Do</NavLink>
             <span className={classes.SignOut} onClick={clickSignOutHandler}>Sign Out</span>
           </>
         : <>
             <NavLink to="/signin">Sign In</NavLink>
-            <NavLink to="/signup">Sign Up</NavLink>
+            <NavLink to="/signup">Sign Up</NavLink> 
           </>
         }
       </nav>

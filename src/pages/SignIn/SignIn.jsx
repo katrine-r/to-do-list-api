@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import classes from "./SignIn.module.scss";
-import Input from "./../../components/UI/Input/Input";
-import { useNavigate } from "react-router-dom";
-import validator from "validator";
-import TodosService from "../../api/TodosService";
+import React, { useState } from 'react';
+import classes from './SignIn.module.scss';
+import Input from './../../components/UI/Input/Input';
+import { useNavigate } from 'react-router-dom';
+import TodosService from '../../api/TodosService';
 
 const SignIn = ({ setIsAuth }) => {
     const navigate = useNavigate()
@@ -14,9 +13,11 @@ const SignIn = ({ setIsAuth }) => {
             password: ''
         }
     })
+    const [error, setError] = useState('')
 
     const changeValueAuthorization = event => {
         event.persist()
+        setError('')
         setAuthorization(prev => {
             return {
                 ...prev,
@@ -29,18 +30,24 @@ const SignIn = ({ setIsAuth }) => {
     const submitAuthHandler = async (event) => {
         event.preventDefault()
 
-        if (!validator.isEmail(authorization.email)) {
-            alert("Please enter correct email")
-        } else if (!validator.isStrongPassword(authorization.password, {minSymbols: 0})) {
-            alert("Password must consist of one lowercase, uppercase letter and number, at least 8 characters")
-        } else {
-            const objUser = {email: authorization.email, password: authorization.password}
-            await TodosService.postLoginUser(objUser)
-        }
+        const objUser = {email: authorization.email, password: authorization.password}
+        await TodosService.postLoginUser(objUser)
+        setError('')
 
-        setIsAuth(true)
-        navigate('/')
-        localStorage.setItem("isAuth", true)
+        const status = Number(window.localStorage.getItem('status'))
+        console.log('status number', status)
+
+        if (status === 200) {
+            window.localStorage.setItem('isAuth', true)
+            setIsAuth(window.localStorage.getItem('isAuth'))
+            setError('')
+            navigate('/')
+        } else {
+            window.localStorage.setItem('isAuth', false)
+            setIsAuth(window.localStorage.getItem('isAuth'))
+            setError('Please enter correct email or password')
+            navigate('/signin')
+        }
     }
 
     return (
@@ -63,6 +70,7 @@ const SignIn = ({ setIsAuth }) => {
                     value={authorization.password1}
                     onChange={changeValueAuthorization}
                 />
+                <span className={classes.Error}>{error}</span>
                 <input type="submit" value="Sign In" className={classes.Button} />
             </form>
         </div>

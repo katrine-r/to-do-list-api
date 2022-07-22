@@ -15,7 +15,7 @@ import { routes } from "./routes"
 function App() {
 
   const [changeTheme, setChangeTheme] = useState("dark")
-  const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth", false))
+  const [isAuth, setIsAuth] = useState(window.localStorage.getItem("isAuth"))
 
   const onChangeThemeHandler = (changeTheme) => {
     if (changeTheme === "dark") {
@@ -35,7 +35,6 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Layout
-                    isAuth={isAuth} 
                     setIsAuth={setIsAuth}
                     onChangeThemeHandler={onChangeThemeHandler} 
                   />} >
