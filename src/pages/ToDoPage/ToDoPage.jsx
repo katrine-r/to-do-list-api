@@ -50,16 +50,29 @@ const ToDoPage = () => {
   };
 
   const checkToDoHandler = async (id) => {
+    if (isActive === "all") {
       const checkMyToDo = myToDo.map((i) => {
-      console.log("i", i);
-      console.log("id", id);
-      if (i.id === id) {
-        return { ...i, completed: !i.completed };
-      } else {
-        return i;
-      }
-    });
-    dispatch(changeCompleted(checkMyToDo));
+        console.log("i", i);
+        console.log("id", id);
+        if (i.id === id) {
+          return { ...i, completed: !i.completed };
+        } else {
+          return i;
+        }
+      });
+      dispatch(changeCompleted(checkMyToDo));
+    } else {
+      const checkMyToDo = filteredToDos.map((i) => {
+        console.log("i", i);
+        console.log("id", id);
+        if (i.id === id) {
+          return { ...i, completed: !i.completed };
+        } else {
+          return i;
+        }
+      });
+      dispatch(changeCompleted(myToDo, checkMyToDo));
+    }
 
     const toDoById = myToDo.find((i) => i.id === id);
     toDoById.completed = !toDoById.completed;
@@ -92,13 +105,13 @@ const ToDoPage = () => {
   const sortedActiveCompleted = (completed) => {
     if (completed) {
       dispatch(filteredMyToDoList([
-        ...myToDo.sort((a, b) => {
+        ...filteredToDos.sort((a, b) => {
           return b.completed - a.completed;
         })
       ]));
     } else {
       dispatch(filteredMyToDoList([
-        ...myToDo.sort((a, b) => {
+        ...filteredToDos.sort((a, b) => {
           return a.completed - b.completed;
         })
       ]));
@@ -108,13 +121,13 @@ const ToDoPage = () => {
   const sortedAlphabetical = (sorted) => {
     if (sorted === "ascending") {
       dispatch(filteredMyToDoList([
-        ...myToDo.sort((a, b) => {
+        ...filteredToDos.sort((a, b) => {
           return a.text.localeCompare(b.text);
         })
       ]));
     } else {
       dispatch(filteredMyToDoList([
-        ...myToDo.sort((a, b) => {
+        ...filteredToDos.sort((a, b) => {
           return b.text.localeCompare(a.text);
         })
       ]));
