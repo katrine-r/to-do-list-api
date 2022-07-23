@@ -2,8 +2,14 @@ import React from "react";
 import classes from "./ToDoList.module.scss";
 import ToDoListItem from "./ToDoListItem/ToDoListItem";
 import classNames from "classnames";
-import { SVGiconsSelector } from "../UI/SVGiconsSelector/SVGiconsSelector";
 import Button from "../UI/Button/Button";
+import SortAlphabeticalAscendingIcon from "../../icons/SortAlphabeticalAscendingIcon";
+import SortAlphabeticalDescendingIcon from "../../icons/SortAlphabeticalDescendingIcon";
+import SortActiveIcon from "../../icons/SortActiveIcon";
+import SortCompletedIcon from "../../icons/SortCompletedIcon";
+import { useContext } from "react";
+import { ChangeThemeContext } from "../../context";
+import DeleteCheckedIcon from "../../icons/DeleteCheckedIcon";
 
 const ToDoList = ({
   removeHandler, 
@@ -17,9 +23,11 @@ const ToDoList = ({
   viewOrEditToDoHandler,
   editingToDoHandler,
   finishedEditingKeyEnterHandler,
-  moveCardToDo
+  moveCardToDo,
+  isSorted
 }) => {
   console.log('filteredMyToDo', filteredMyToDo)
+  const { changeTheme } = useContext(ChangeThemeContext)
 
   return (
     <div className={classes.ToDoList}>
@@ -46,17 +54,39 @@ const ToDoList = ({
         <li className={classes.ListItemButtonWrapper}>
           <div>
             <Button onClick={() => sortedAlphabetical("ascending")}>
-              <SVGiconsSelector id="sortAlphabeticalAscending" />
+              { isSorted === "ascending" && changeTheme === "dark"
+                ? <SortAlphabeticalAscendingIcon fill={"#3c5ea7"} />
+                : isSorted === "ascending" && changeTheme === "light"
+                ? <SortAlphabeticalAscendingIcon fill={"#b763ef"} />
+                : <SortAlphabeticalAscendingIcon />
+              }
             </Button>
+            
             <Button onClick={() => sortedAlphabetical("descending")}>
-              <SVGiconsSelector id="sortAlphabeticalDescending" />
+              { isSorted === "descending" && changeTheme === "dark"
+                ? <SortAlphabeticalDescendingIcon fill={"#3c5ea7"} />
+                : isSorted === "descending" && changeTheme === "light"
+                ? <SortAlphabeticalDescendingIcon fill={"#b763ef"} />
+                : <SortAlphabeticalDescendingIcon />
+              }
             </Button>
 
-            <Button onClick={() => sortedActiveCompleted(false)}>
-              <SVGiconsSelector id="sortActive" />
+            <Button onClick={() => sortedActiveCompleted("sortActive")}>
+              { isSorted === "sortActive" && changeTheme === "dark"
+                ? <SortActiveIcon fill={"#3c5ea7"} />
+                : isSorted === "sortActive" && changeTheme === "light"
+                ? <SortActiveIcon fill={"#b763ef"} />
+                : <SortActiveIcon />
+              }
             </Button>
-            <Button onClick={() => sortedActiveCompleted(true)}>
-              <SVGiconsSelector id="sortCompleted" />
+
+            <Button onClick={() => sortedActiveCompleted("sortCompleted")}>
+              { isSorted === "sortCompleted" && changeTheme === "dark"
+                ? <SortCompletedIcon fill={"#3c5ea7"} />
+                : isSorted === "sortCompleted" && changeTheme === "light"
+                ? <SortCompletedIcon fill={"#b763ef"} />
+                : <SortCompletedIcon />
+              }
             </Button>
           </div>
 
@@ -90,7 +120,7 @@ const ToDoList = ({
 
             <div>
               <Button onClick={() => removeCompletedToDoHandler()}>
-                <SVGiconsSelector id="deleteChecked" />
+                <DeleteCheckedIcon />
               </Button>
             </div>
           </div>

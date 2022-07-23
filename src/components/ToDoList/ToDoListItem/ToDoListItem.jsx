@@ -1,11 +1,16 @@
 import React, { useRef } from "react";
 import classes from "./ToDoListItem.module.scss";
-import { SVGiconsSelector } from "../../UI/SVGiconsSelector/SVGiconsSelector";
 import classNames from "classnames";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../../../ItemTypes";
+import EditIcon from "../../../icons/EditIcon";
+import { useContext } from "react";
+import { ChangeThemeContext } from "../../../context";
+import DeleteIcon from "../../../icons/DeleteIcon";
+import CheckBoldIcon from "../../../icons/CheckBoldIcon";
+import CheckboxBlankCircleIcon from "../../../icons/CheckboxBlankCircleIcon";
 
 const ToDoListItem = ({
   text, 
@@ -20,6 +25,8 @@ const ToDoListItem = ({
   moveCardToDo,
   index
 }) => {
+
+  const { changeTheme } = useContext(ChangeThemeContext)
 
   const ref = useRef(null)
   const [{ handlerId }, drop] = useDrop({
@@ -85,8 +92,8 @@ const ToDoListItem = ({
           onClick={() => checkToDoHandler(id)}
         >
           { completed
-              ? <SVGiconsSelector id="checkBold" className={classes.CheckBoldIcon} /> 
-              : <SVGiconsSelector id="checkboxBlankCircle" />
+              ? <CheckBoldIcon className={classes.CheckBoldIcon} />
+              : <CheckboxBlankCircleIcon />
           }
         </span>
       </div>
@@ -110,10 +117,15 @@ const ToDoListItem = ({
 
       <div className={classes.ButtonWrapper}>
         <Button onClick={() => viewOrEditToDoHandler(id)}>
-          <SVGiconsSelector id="edit" />
+          { edit && changeTheme === "dark" 
+            ? <EditIcon fill={"#3c5ea7"} />
+            : edit && changeTheme === "light" 
+            ? <EditIcon fill={"#b763ef"} />
+            : <EditIcon /> 
+          }
         </Button>
         <Button onClick={() => removeHandler(id)}>
-          <SVGiconsSelector id="delete" />
+          <DeleteIcon />
         </Button>
       </div>
     </li>

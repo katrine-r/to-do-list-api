@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
-import classes from './HeaderTitle.module.scss'
-import './HeaderTitle.scss'
-import { SVGiconsSelector } from '../UI/SVGiconsSelector/SVGiconsSelector'
-import Button from '../UI/Button/Button'
-import { ChangeThemeContext } from '../../context'
-import { NavLink, useNavigate } from 'react-router-dom'
+import React, { useContext } from "react"
+import classes from "./HeaderTitle.module.scss"
+import "./HeaderTitle.scss"
+import Button from "../UI/Button/Button"
+import { ChangeThemeContext } from "../../context"
+import { NavLink, useNavigate } from "react-router-dom"
+import SunnyIcon from "../../icons/SunnyIcon"
+import MoonIcon from "../../icons/MoonIcon"
 
 const HeaderTitle = ({ setIsAuth, onChangeThemeHandler }) => {
 
@@ -45,8 +46,8 @@ const HeaderTitle = ({ setIsAuth, onChangeThemeHandler }) => {
           onClick={() => onChangeThemeHandler(changeTheme)}
         >
           { changeTheme === "dark" 
-              ? <SVGiconsSelector id="sunny" />
-              : <SVGiconsSelector id="moon" />
+              ? <SunnyIcon />
+              : <MoonIcon />
           }
         </Button>
       </div>

@@ -2,13 +2,14 @@ import React, { useMemo, useState, useEffect, useCallback } from "react";
 import classes from "./ToDoPage.module.scss";
 import Input from "../../components/UI/Input/Input"
 import ToDoList from "../../components/ToDoList/ToDoList"
-import { SVGiconsSelector } from "../../components/UI/SVGiconsSelector/SVGiconsSelector";
 import update from "immutability-helper";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
 import Loader from "../../components/UI/Loader/Loader";
 import { useFetching } from "../../hooks/useFetching";
+import SearchIcon from "../../icons/SearchIcon";
+import KeyboardIcon from "../../icons/KeyboardIcon";
 
 const ToDoPage = () => {
 
@@ -19,6 +20,7 @@ const ToDoPage = () => {
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
   const [isActive, setIsActive] = useState("all");
+  const [isSorted, setIsSorted] = useState("");
   const [fetching, isLoading, error] = useFetching(async () => {
     const myToDo = await TodosService.getTodos();
     dispatch(getMyToDoList(myToDo));
@@ -32,10 +34,11 @@ const ToDoPage = () => {
       dispatch(addToDo([objToDo, ...myToDo]));
       setTextToDo("");
       setIsActive("all");
+      setIsSorted("")
       const updateNewToDoList = await TodosService.getTodos()
       dispatch(getMyToDoList(updateNewToDoList))
     }
-  };
+  }
 
   const removeHandler = async (id) => {
     const removeToDoFilter = myToDo.filter((i) => i.id !== id);
@@ -47,7 +50,7 @@ const ToDoPage = () => {
     
     console.log('removeToDoById', toDoById);
     await TodosService.deleteTodoById(id, toDoById);
-  };
+  }
 
   const checkToDoHandler = async (id) => {
     if (isActive === "all") {
@@ -80,7 +83,7 @@ const ToDoPage = () => {
 
     await TodosService.putTodoById(id, toDoById);
     console.log("id", id);
-  };
+  }
 
   const filterToDo = useMemo(() => {
     if (searchToDo) {
@@ -95,15 +98,20 @@ const ToDoPage = () => {
   const filteredActiveCompleted = (checked) => {
     if (checked === "all") {
       dispatch(filteredMyToDoList(myToDo));
+      setIsSorted("")
+
     } else {
       const filtered = [...myToDo.filter((i) => i.completed === checked)];
       dispatch(filteredMyToDoList(filtered));
+      setIsSorted("")
+
     }
     setIsActive(checked);
-  };
+  }
 
-  const sortedActiveCompleted = (completed) => {
-    if (completed) {
+  const sortedActiveCompleted = (isSorted) => {
+    setIsSorted(isSorted)
+    if (isSorted === "sortCompleted") {
       dispatch(filteredMyToDoList([
         ...filteredToDos.sort((a, b) => {
           return b.completed - a.completed;
@@ -116,10 +124,11 @@ const ToDoPage = () => {
         })
       ]));
     }
-  };
+  }
 
-  const sortedAlphabetical = (sorted) => {
-    if (sorted === "ascending") {
+  const sortedAlphabetical = (isSorted) => {
+    setIsSorted(isSorted)
+    if (isSorted === "ascending") {
       dispatch(filteredMyToDoList([
         ...filteredToDos.sort((a, b) => {
           return a.text.localeCompare(b.text);
@@ -132,7 +141,7 @@ const ToDoPage = () => {
         })
       ]));
     }
-  };
+  }
 
   const removeCompletedToDoHandler = async () => {
     const removeCompletedToDos = myToDo.filter((i) => i.completed === false)
@@ -146,7 +155,7 @@ const ToDoPage = () => {
     
     const results = await Promise.all(completedToDos);
     console.log('results promise', results);
-  };
+  }
 
   const viewOrEditToDoHandler = (id) => {
     const viewOrEditToDo = myToDo.map((i) => {
@@ -157,7 +166,7 @@ const ToDoPage = () => {
       }
     });
     dispatch(getMyToDoList(viewOrEditToDo))
-  };
+  }
   
   const editingToDoHandler = (ev, id) => {
     console.log("ev ", ev.target.value);
@@ -170,7 +179,7 @@ const ToDoPage = () => {
       }
     });
     dispatch(getMyToDoList(editingToDo))
-  };
+  }
 
   const finishedEditingKeyEnterHandler = (ev, id) => {
     const finishedEditingKey = myToDo.map((i) => {
@@ -185,7 +194,7 @@ const ToDoPage = () => {
     if (ev.key === "Enter") {
       editedToDoFetch(id);
     }
-  };
+  }
 
   const editedToDoFetch = async (id) => {
     const toDoById = myToDo.find(i => i.id === id);
@@ -206,13 +215,13 @@ const ToDoPage = () => {
       ))
     },
     [filteredToDos]
-  );
+  )
 
   console.log("myToDo", myToDo);
 
   useEffect(() => {
     fetching()
-  }, []);
+  }, [])
 
   useEffect(() => {
     dispatch(filteredMyToDoList(myToDo));
@@ -223,7 +232,7 @@ const ToDoPage = () => {
       <div className={classes.ToDoWrapper}>
         <div className={classes.SearchWrapper}>
           <span className={classes.IconWrapper}>
-            <SVGiconsSelector id="search" />
+            <SearchIcon />
           </span>
 
           <Input
@@ -236,7 +245,7 @@ const ToDoPage = () => {
 
         <form onSubmit={handleSubmit} className={classes.FormWrapper}>
           <span className={classes.IconWrapper}>
-            <SVGiconsSelector id="keyboard" />
+            <KeyboardIcon />
           </span>
 
           <Input
@@ -264,6 +273,7 @@ const ToDoPage = () => {
                 editingToDoHandler={editingToDoHandler}
                 finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
                 moveCardToDo={moveCardToDo}
+                isSorted={isSorted}
               />
             ) : (
               <span className={classes.EmptyToDo}>To-do list is empty</span>
