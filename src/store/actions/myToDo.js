@@ -3,6 +3,7 @@ import { ADD_TODO } from '../types'
 import { REMOVE_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
 import { FILTERED_MYTODOLIST } from '../types'
+import { EDIT_TODO } from '../types'
 
 export const getMyToDoList = payload => {
   return {
@@ -35,6 +36,13 @@ export const changeCompleted = payload => {
 export const filteredMyToDoList = payload => {
   return {
     type: FILTERED_MYTODOLIST,
+    payload
+  }
+}
+
+export const editToDo = payload => {
+  return {
+    type: EDIT_TODO,
     payload
   }
 }

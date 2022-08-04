@@ -5,7 +5,7 @@ import ToDoList from "../../components/ToDoList/ToDoList"
 import update from "immutability-helper";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList } from "../../store/actions/myToDo";
+import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList, editToDo } from "../../store/actions/myToDo";
 import Loader from "../../components/UI/Loader/Loader";
 import { useFetching } from "../../hooks/useFetching";
 import SearchIcon from "../../icons/SearchIcon";
@@ -14,8 +14,7 @@ import KeyboardIcon from "../../icons/KeyboardIcon";
 const ToDoPage = () => {
 
   const dispatch = useDispatch();
-  const { myToDo, filteredToDos } = useSelector((state) => state.myToDo);
-  console.log("myToDoReducer", myToDo);
+  const { myToDo, filteredToDos, isEdited } = useSelector((state) => state.myToDo);
 
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
@@ -35,8 +34,8 @@ const ToDoPage = () => {
       setTextToDo("");
       setIsActive("all");
       setIsSorted("")
-      const updateNewToDoList = await TodosService.getTodos()
-      dispatch(getMyToDoList(updateNewToDoList))
+
+      fetching()
     }
   }
 
@@ -99,12 +98,10 @@ const ToDoPage = () => {
     if (checked === "all") {
       dispatch(filteredMyToDoList(myToDo));
       setIsSorted("")
-
     } else {
       const filtered = [...myToDo.filter((i) => i.completed === checked)];
       dispatch(filteredMyToDoList(filtered));
       setIsSorted("")
-
     }
     setIsActive(checked);
   }
@@ -158,47 +155,77 @@ const ToDoPage = () => {
   }
 
   const viewOrEditToDoHandler = (id) => {
-    const viewOrEditToDo = myToDo.map((i) => {
+    const viewOrEditToDo = filteredToDos.map((i) => {
       if (i.id === id) {
         return { ...i, edit: !i.edit };
       } else {
         return i;
       }
     });
-    dispatch(getMyToDoList(viewOrEditToDo))
+    dispatch(editToDo(!isEdited))
+    dispatch(filteredMyToDoList(viewOrEditToDo))
+    dispatch(getMyToDoList(myToDo, viewOrEditToDo))   
+
+    if (isEdited === false) {
+      editedToDoFetch(id);
+    } 
   }
   
   const editingToDoHandler = (ev, id) => {
-    console.log("ev ", ev.target.value);
-    console.log("id ", id);
-    const editingToDo = myToDo.map((i) => {
+    const editingToDo = filteredToDos.map((i) => {
       if (i.id === id) {
         return { ...i, text: ev.target.value };
       } else {
         return i;
       }
     });
-    dispatch(getMyToDoList(editingToDo))
+    dispatch(filteredMyToDoList(editingToDo))
+    dispatch(getMyToDoList(myToDo, editingToDo))
   }
 
-  const finishedEditingKeyEnterHandler = (ev, id) => {
-    const finishedEditingKey = myToDo.map((i) => {
+  const finishedEditingKeyEnterHandler = (ev, id) => { 
+    const finishedEditingKey = filteredToDos.map((i) => {
       if (i.id === id && ev.key === "Enter") {
         return { ...i, edit: false };
       } else {
         return i;
       }
     });
-    dispatch(getMyToDoList(finishedEditingKey));
+    dispatch(filteredMyToDoList(finishedEditingKey));
+    dispatch(getMyToDoList(myToDo, finishedEditingKey))
 
     if (ev.key === "Enter") {
+      dispatch(editToDo(!isEdited))
       editedToDoFetch(id);
     }
   }
 
   const editedToDoFetch = async (id) => {
-    const toDoById = myToDo.find(i => i.id === id);
-    await TodosService.putTodoById(id, toDoById);
+    const toDoById = filteredToDos.find(i => i.id === id);
+    console.log('toDoById', toDoById)
+    const putTodo = await TodosService.putTodoById(id, toDoById);
+    const getTodos = await TodosService.getTodos();
+      
+      Promise.all([
+        putTodo, 
+        getTodos
+      ]).then(values => {
+        console.log(values)
+        dispatch(getMyToDoList(getTodos))
+        const filtered = [...getTodos.filter((i) => i.completed === isActive)];
+        dispatch(filteredMyToDoList(filtered));
+
+        if (isActive === "all") {
+          dispatch(filteredMyToDoList(getTodos));
+          setIsSorted("")
+        } 
+        else {
+          const filtered = [...getTodos.filter((i) => i.completed === isActive)];
+          dispatch(filteredMyToDoList(filtered));
+          setIsSorted("")
+        }
+        setIsActive(isActive);
+      })
   }
 
   const moveCardToDo = useCallback(
