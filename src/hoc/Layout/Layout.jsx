@@ -7,11 +7,15 @@ const Layout = ({ setIsAuth, onChangeThemeHandler }) => {
 
   return (
     <div className={classes.Layout}>
-      <NavBar 
-        setIsAuth={setIsAuth}
-        onChangeThemeHandler={onChangeThemeHandler} 
-      />
-      <Outlet />
+      <header>
+        <NavBar 
+          setIsAuth={setIsAuth}
+          onChangeThemeHandler={onChangeThemeHandler} 
+        />
+      </header>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };

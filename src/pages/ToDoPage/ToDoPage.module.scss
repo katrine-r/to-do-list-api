@@ -7,7 +7,7 @@
     top: 110px;
   }
   
-  .ToDoWrapper {
+  .ContentWrapper {
     width: 100%;
     max-width: 600px;
   }
@@ -28,19 +28,29 @@
     }
   }
   
-  .EmptyToDo {
-    color: var(--color-empty-to-do);
+  .ToDos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    width: 100%;
+    padding-bottom: 100px;
+    background: var(--bg-color);
+
+    .EmptyToDo {
+      color: var(--color-empty-to-do);
+    }
   }
   
   @media screen and (max-width: 767px) {
-    .ToDoWrapper {
+    .ContentWrapper {
       width: 100%;
       max-width: 380px;
     }
   }
   
   @media screen and (max-width: 424px) {
-    .ToDoWrapper {
+    .ContentWrapper {
       width: 100%;
       max-width: 330px;
     }

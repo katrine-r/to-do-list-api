@@ -256,7 +256,7 @@ const ToDoPage = () => {
 
   return (
     <div className={classes.ToDoPage}>
-      <div className={classes.ToDoWrapper}>
+      <div className={classes.ContentWrapper}>
         <div className={classes.SearchWrapper}>
           <span className={classes.IconWrapper}>
             <SearchIcon />
@@ -282,30 +282,34 @@ const ToDoPage = () => {
             onChange={(ev) => setTextToDo(ev.target.value)}
           />
         </form>
+      </div>
 
-        { 
-          isLoading ? 
-            <Loader />
-            : myToDo?.length ? (
-              <ToDoList
-                filteredMyToDo={filterToDo}
-                removeHandler={removeHandler}
-                checkToDoHandler={checkToDoHandler}
-                filteredActiveCompleted={filteredActiveCompleted}
-                isActive={isActive}
-                sortedActiveCompleted={sortedActiveCompleted}
-                sortedAlphabetical={sortedAlphabetical}
-                removeCompletedToDoHandler={removeCompletedToDoHandler}
-                viewOrEditToDoHandler={viewOrEditToDoHandler}
-                editingToDoHandler={editingToDoHandler}
-                finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
-                moveCardToDo={moveCardToDo}
-                isSorted={isSorted}
-              />
-            ) : (
-              <span className={classes.EmptyToDo}>To-do list is empty</span>
-            )
-        }
+      <div className={classes.ToDos}>
+        <div className={classes.ContentWrapper}>
+          { 
+            isLoading ? 
+              <Loader />
+              : myToDo?.length ? (
+                <ToDoList
+                  filteredMyToDo={filterToDo}
+                  removeHandler={removeHandler}
+                  checkToDoHandler={checkToDoHandler}
+                  filteredActiveCompleted={filteredActiveCompleted}
+                  isActive={isActive}
+                  sortedActiveCompleted={sortedActiveCompleted}
+                  sortedAlphabetical={sortedAlphabetical}
+                  removeCompletedToDoHandler={removeCompletedToDoHandler}
+                  viewOrEditToDoHandler={viewOrEditToDoHandler}
+                  editingToDoHandler={editingToDoHandler}
+                  finishedEditingKeyEnterHandler={finishedEditingKeyEnterHandler}
+                  moveCardToDo={moveCardToDo}
+                  isSorted={isSorted}
+                />
+              ) : (
+                <span className={classes.EmptyToDo}>To-do list is empty</span>
+              )
+          }
+        </div> 
       </div>
     </div>
   );
