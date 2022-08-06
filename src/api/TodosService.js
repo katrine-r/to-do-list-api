@@ -9,7 +9,8 @@ function saveToken(token) {
 class TodosService {
 
   static async getTodos() {
-    const response = await fetch(
+    try {
+      const response = await fetch(
         `${API_URL}/API/v1/todo/`,
          {
             'headers': {
@@ -17,10 +18,15 @@ class TodosService {
               'Authorization': `${window.localStorage.getItem('tokenType')} ${window.localStorage.getItem('tokenAccess')}`                                  
             },
          }
-    )
-    const todos = await response.json();
-    const myToDo = todos.objects
-    return myToDo
+      )
+      const todos = await response.json();
+      window.localStorage.setItem('status', response.status)
+      console.log('getTodos status', response.status)
+      const myToDo = todos.objects
+      return myToDo
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
   }
 
   static async postTodos(objToDo) {
@@ -38,6 +44,8 @@ class TodosService {
       });
       const json = await response.json();
       console.log('Успех:', JSON.stringify(json));
+      window.localStorage.setItem('status', response.status)
+      console.log('postTodos status', response.status)
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -56,6 +64,8 @@ class TodosService {
       });
       const json = await response.json();
       console.log('Успех:', JSON.stringify(json));
+      window.localStorage.setItem('status', response.status)
+      console.log('putTodos status', response.status)
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -63,7 +73,7 @@ class TodosService {
 
   static async deleteTodoById(id, toDoById) {
     try {
-      await fetch(`${API_URL}/API/v1/todos/${id}/`, {
+      const response = await fetch(`${API_URL}/API/v1/todos/${id}/`, {
         method: 'DELETE',
         headers: {
           accept: 'application/json',
@@ -72,6 +82,9 @@ class TodosService {
         }
       });
       console.log('Успех:', toDoById);
+      const json = await response.json();
+      console.log('Успех:', JSON.stringify(json));
+      window.localStorage.setItem('status', response.status)
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -118,7 +131,7 @@ class TodosService {
     }
     console.log('postLoginUser', objUser)
   }
-
+  
 }
 
 export default TodosService

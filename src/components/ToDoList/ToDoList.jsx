@@ -10,13 +10,13 @@ import SortCompletedIcon from "../../icons/SortCompletedIcon";
 import { useContext } from "react";
 import { ChangeThemeContext } from "../../context";
 import DeleteCheckedIcon from "../../icons/DeleteCheckedIcon";
+import { useSelector } from "react-redux";
 
 const ToDoList = ({
   removeHandler, 
   checkToDoHandler, 
   filteredMyToDo,
   filteredActiveCompleted,
-  isActive,
   sortedActiveCompleted,
   sortedAlphabetical,
   removeCompletedToDoHandler,
@@ -28,6 +28,7 @@ const ToDoList = ({
 }) => {
   console.log('filteredMyToDo', filteredMyToDo)
   const { changeTheme } = useContext(ChangeThemeContext)
+  const { isActive } = useSelector((state) => state.myToDo)
 
   return (
     <div className={classes.ToDoList}>

@@ -5,24 +5,37 @@ import ToDoList from "../../components/ToDoList/ToDoList"
 import update from "immutability-helper";
 import TodosService from "../../api/TodosService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList, editToDo } from "../../store/actions/myToDo";
+import { addToDo, removeToDo, getMyToDoList, changeCompleted, filteredMyToDoList, editToDo, activeList } from "../../store/actions/myToDo";
 import Loader from "../../components/UI/Loader/Loader";
 import { useFetching } from "../../hooks/useFetching";
 import SearchIcon from "../../icons/SearchIcon";
 import KeyboardIcon from "../../icons/KeyboardIcon";
+import { useNavigate } from "react-router-dom";
 
 const ToDoPage = () => {
 
+  const navigate = useNavigate()
+
+  const redirect = () => {
+    const status = Number(window.localStorage.getItem('status'))
+    console.log('status number', status)
+    if (status === 200) {
+      navigate('/')
+    } else {
+      navigate('/signin')
+    }
+  }
+
   const dispatch = useDispatch();
-  const { myToDo, filteredToDos, isEdited } = useSelector((state) => state.myToDo);
+  const { myToDo, filteredToDos, isEdited, isActive } = useSelector((state) => state.myToDo);
 
   const [textToDo, setTextToDo] = useState("");
   const [searchToDo, setSearchToDo] = useState("");
-  const [isActive, setIsActive] = useState("all");
   const [isSorted, setIsSorted] = useState("");
   const [fetching, isLoading, error] = useFetching(async () => {
     const myToDo = await TodosService.getTodos();
     dispatch(getMyToDoList(myToDo));
+    redirect()
   });
 
   const handleSubmit = async (ev) => {
@@ -32,8 +45,8 @@ const ToDoPage = () => {
       await TodosService.postTodos(objToDo);
       dispatch(addToDo([objToDo, ...myToDo]));
       setTextToDo("");
-      setIsActive("all");
-      setIsSorted("")
+      dispatch(activeList("all"));
+      setIsSorted("");
 
       fetching()
     }
@@ -42,13 +55,15 @@ const ToDoPage = () => {
   const removeHandler = async (id) => {
     const removeToDoFilter = myToDo.filter((i) => i.id !== id);
     dispatch(removeToDo(removeToDoFilter));
-    setIsActive("all");
+    dispatch(activeList("all"));
 
     const toDoById = myToDo.find(i => i.id === id);
     console.log("id", id);
-    
     console.log('removeToDoById', toDoById);
+
     await TodosService.deleteTodoById(id, toDoById);
+    
+    redirect()
   }
 
   const checkToDoHandler = async (id) => {
@@ -82,6 +97,8 @@ const ToDoPage = () => {
 
     await TodosService.putTodoById(id, toDoById);
     console.log("id", id);
+
+    redirect()
   }
 
   const filterToDo = useMemo(() => {
@@ -103,7 +120,7 @@ const ToDoPage = () => {
       dispatch(filteredMyToDoList(filtered));
       setIsSorted("")
     }
-    setIsActive(checked);
+    dispatch(activeList(checked));
   }
 
   const sortedActiveCompleted = (isSorted) => {
@@ -143,14 +160,15 @@ const ToDoPage = () => {
   const removeCompletedToDoHandler = async () => {
     const removeCompletedToDos = myToDo.filter((i) => i.completed === false)
     dispatch(removeToDo(removeCompletedToDos));
-    setIsActive("all");
+    dispatch(activeList("all"));
 
     const todosId = myToDo.filter((i) => i.completed === true);
     console.log('todosId', todosId);
 
     const completedToDos = todosId.map(i => TodosService.deleteTodoById(i.id, i));
-    
     const results = await Promise.all(completedToDos);
+    
+    redirect()
     console.log('results promise', results);
   }
 
@@ -206,26 +224,28 @@ const ToDoPage = () => {
     const putTodo = await TodosService.putTodoById(id, toDoById);
     const getTodos = await TodosService.getTodos();
       
-      Promise.all([
-        putTodo, 
-        getTodos
-      ]).then(values => {
-        console.log(values)
-        dispatch(getMyToDoList(getTodos))
+    Promise.all([
+      putTodo, 
+      getTodos
+    ]).then(values => {
+      console.log(values)
+      dispatch(getMyToDoList(getTodos))
+      const filtered = [...getTodos.filter((i) => i.completed === isActive)];
+      dispatch(filteredMyToDoList(filtered));
+
+      if (isActive === "all") {
+        dispatch(filteredMyToDoList(getTodos));
+        setIsSorted("")
+      } 
+      else {
         const filtered = [...getTodos.filter((i) => i.completed === isActive)];
         dispatch(filteredMyToDoList(filtered));
+        setIsSorted("")
+      }
+      dispatch(activeList(isActive));
+    })
 
-        if (isActive === "all") {
-          dispatch(filteredMyToDoList(getTodos));
-          setIsSorted("")
-        } 
-        else {
-          const filtered = [...getTodos.filter((i) => i.completed === isActive)];
-          dispatch(filteredMyToDoList(filtered));
-          setIsSorted("")
-        }
-        setIsActive(isActive);
-      })
+    redirect()
   }
 
   const moveCardToDo = useCallback(
@@ -295,7 +315,6 @@ const ToDoPage = () => {
                   removeHandler={removeHandler}
                   checkToDoHandler={checkToDoHandler}
                   filteredActiveCompleted={filteredActiveCompleted}
-                  isActive={isActive}
                   sortedActiveCompleted={sortedActiveCompleted}
                   sortedAlphabetical={sortedAlphabetical}
                   removeCompletedToDoHandler={removeCompletedToDoHandler}

@@ -4,6 +4,7 @@ import { REMOVE_TODO } from '../types'
 import { CHANGE_COMPLETED } from '../types'
 import { FILTERED_MYTODOLIST } from '../types'
 import { EDIT_TODO } from '../types'
+import { ACTIVE_LIST } from '../types'
 
 export const getMyToDoList = payload => {
   return {
@@ -43,6 +44,13 @@ export const filteredMyToDoList = payload => {
 export const editToDo = payload => {
   return {
     type: EDIT_TODO,
+    payload
+  }
+}
+
+export const activeList = payload => {
+  return {
+    type: ACTIVE_LIST,
     payload
   }
 }
