@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/to-do-list-api/static/css/main.158822fa.css",
-    "main.js": "/to-do-list-api/static/js/main.86d7b28d.js",
+    "main.js": "/to-do-list-api/static/js/main.7e58e568.js",
     "static/media/architecture-g4668b87fd_500.jpg": "/to-do-list-api/static/media/architecture-g4668b87fd_500.9873717909d721593b1f.jpg",
     "static/media/pexels-tom-nagel-3878622_1920_500.jpg": "/to-do-list-api/static/media/pexels-tom-nagel-3878622_1920_500.0a9643a88370ff2a00eb.jpg",
     "index.html": "/to-do-list-api/index.html",
     "main.158822fa.css.map": "/to-do-list-api/static/css/main.158822fa.css.map",
-    "main.86d7b28d.js.map": "/to-do-list-api/static/js/main.86d7b28d.js.map"
+    "main.7e58e568.js.map": "/to-do-list-api/static/js/main.7e58e568.js.map"
   },
   "entrypoints": [
     "static/css/main.158822fa.css",
-    "static/js/main.86d7b28d.js"
+    "static/js/main.7e58e568.js"
   ]
 }
